@@ -22,7 +22,7 @@ public sealed partial class DeviceController
     [HttpGet("pair/{pairCode}", Name = "Pair")]
     [HttpGet("~/{version:apiVersion}/pair/{pairCode}", Name = "Pair_DEPRECATED")] // Backwards compatibility
     [ProducesResponseType<BaseResponse<string>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "PairCodeNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // PairCodeNotFound
     public async Task<IActionResult> Pair([FromRoute] string pairCode)
     {
         var devicePairs = _redis.RedisCollection<DevicePair>();

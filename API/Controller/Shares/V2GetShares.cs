@@ -29,7 +29,7 @@ public sealed partial class SharesController
     
     [HttpGet("{userId:guid}")]
     [ProducesResponseType<ShareInfo>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "UserNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // UserNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> GetSharesToUser(Guid userId)
     {

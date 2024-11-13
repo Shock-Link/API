@@ -19,7 +19,7 @@ public sealed partial class SharesController
     /// <response code="404">Share code not found or does not belong to you</response>
     [HttpDelete("code/{shareCodeId}")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareCodeNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareCodeNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> DeleteShareCode([FromRoute] Guid shareCodeId)
     {

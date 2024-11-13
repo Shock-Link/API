@@ -10,7 +10,7 @@ public sealed partial class SessionsController
 {
     [HttpDelete("{sessionId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "SessionNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // SessionNotFound
     public async Task<IActionResult> DeleteSession(Guid sessionId)
     {
         var loginSession = await _sessionService.GetSessionByPulbicId(sessionId);

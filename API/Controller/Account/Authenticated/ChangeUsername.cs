@@ -17,9 +17,9 @@ public sealed partial class AuthenticatedAccountController
     /// <exception cref="Exception"></exception>
     [HttpPost("username")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.Conflict, "UsernameTaken")]
-    [ProducesProblem(HttpStatusCode.BadRequest, "UsernameInvalid")]
-    [ProducesProblem(HttpStatusCode.Forbidden, "UsernameRecentlyChanged")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, "application/problem+json")] // UsernameTaken
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // UsernameInvalid
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // UsernameRecentlyChanged
     public async Task<IActionResult> ChangeUsername(ChangeUsernameRequest data)
     {
         var result = await _accountService.ChangeUsername(CurrentUser.DbUser.Id, data.Username,

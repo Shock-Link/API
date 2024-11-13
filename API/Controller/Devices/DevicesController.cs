@@ -44,7 +44,7 @@ public sealed partial class DevicesController
     /// <response code="200">The device</response>
     [HttpGet("{deviceId}")]
     [ProducesResponseType<BaseResponse<Models.Response.ResponseDeviceWithToken>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetDeviceById([FromRoute] Guid deviceId)
     {
@@ -75,7 +75,7 @@ public sealed partial class DevicesController
     [HttpPatch("{deviceId}")]
     [TokenPermission(PermissionType.Devices_Edit)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> EditDevice([FromRoute] Guid deviceId, [FromBody] HubEditRequest body, [FromServices] IDeviceUpdateService updateService)
     {
@@ -101,7 +101,7 @@ public sealed partial class DevicesController
     [HttpPut("{deviceId}")]
     [TokenPermission(PermissionType.Devices_Edit)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> RegenerateDeviceToken([FromRoute] Guid deviceId)
     {
@@ -127,7 +127,7 @@ public sealed partial class DevicesController
     [HttpDelete("{deviceId}")]
     [TokenPermission(PermissionType.Devices_Edit)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> RemoveDevice([FromRoute] Guid deviceId, [FromServices] IDeviceUpdateService updateService)
     {
@@ -189,7 +189,7 @@ public sealed partial class DevicesController
     [HttpGet("{deviceId}/pair")]
     [TokenPermission(PermissionType.Devices_Edit)]
     [ProducesResponseType<BaseResponse<string>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetPairCode([FromRoute] Guid deviceId)
     {
@@ -224,9 +224,9 @@ public sealed partial class DevicesController
     /// <response code="500">Internal server error, lcg node could not be found</response>
     [HttpGet("{deviceId}/lcg")]
     [ProducesResponseType<BaseResponse<LcgResponse>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceIsNotOnline")]
-    [ProducesProblem(HttpStatusCode.PreconditionFailed, "DeviceNotConnectedToGateway")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceIsNotOnline
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status412PreconditionFailed, "application/problem+json")] // DeviceNotConnectedToGateway
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetLiveControlGatewayInfo([FromRoute] Guid deviceId)
     {

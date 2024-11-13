@@ -23,7 +23,7 @@ public sealed partial class ShockerController
     [HttpDelete("{shockerId}")]
     [TokenPermission(PermissionType.Shockers_Edit)]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShockerNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> RemoveShocker(
         [FromRoute] Guid shockerId,

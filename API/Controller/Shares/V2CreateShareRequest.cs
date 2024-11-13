@@ -14,9 +14,9 @@ public sealed partial class SharesController
 {
     [HttpPost("requests")]
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "UserNotFound")]
-    [ProducesProblem(HttpStatusCode.BadRequest, "ShareCreateCannotShareWithSelf")]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareCreateShockerNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // UserNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // ShareCreateCannotShareWithSelf
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareCreateShockerNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> CreateShare([FromBody] CreateShareRequest data)
     {

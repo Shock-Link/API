@@ -81,7 +81,7 @@ public sealed partial class SharesController
     
     [HttpGet("requests/{id:guid}")]
     [ProducesResponseType<ShareRequestBaseDetails>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareRequestNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> GetRequest(Guid id)
     {
@@ -129,7 +129,7 @@ public sealed partial class SharesController
     
     [HttpDelete("requests/outgoing/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareRequestNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> DeleteRequest(Guid id)
     {
@@ -143,7 +143,7 @@ public sealed partial class SharesController
     
     [HttpDelete("requests/incoming/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareRequestNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> DenyRequest(Guid id)
     {
@@ -157,7 +157,7 @@ public sealed partial class SharesController
 
     // [HttpPost("requests/incoming/{id:guid}")]
     // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesProblem(HttpStatusCode.NotFound, "ShareRequestNotFound")]
+    // [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
     // [ApiVersion("2")]
     // public async Task<IActionResult> RedeemRequest(Guid id)
     // {

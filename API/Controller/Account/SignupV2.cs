@@ -24,8 +24,8 @@ public sealed partial class AccountController
     /// <response code="400">Username or email already exists</response>
     [HttpPost("signup")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.Conflict, "EmailOrUsernameAlreadyExists")]
-    [ProducesProblem(HttpStatusCode.Forbidden, "InvalidTurnstileResponse")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, "application/problem+json")] // EmailOrUsernameAlreadyExists
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // InvalidTurnstileResponse
     [MapToApiVersion("2")]
     public async Task<IActionResult> SignUpV2(
         [FromBody] SignUpV2 body,

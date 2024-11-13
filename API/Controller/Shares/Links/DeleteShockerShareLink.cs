@@ -20,8 +20,8 @@ public sealed partial class ShareLinksController
     /// <response code="400">Shocker does not exist in share link</response>
     [HttpDelete("{shareLinkId}/{shockerId}")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareLinkNotFound")]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShockerNotInShareLink")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareLinkNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotInShareLink
     public async Task<IActionResult> RemoveShocker([FromRoute] Guid shareLinkId, [FromRoute] Guid shockerId)
     {
         var exists = await _db.ShockerSharesLinks

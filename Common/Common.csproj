@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
             <PrivateAssets>all</PrivateAssets>
@@ -37,11 +38,6 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.0" />
         <PackageReference Include="OneOf" Version="3.0.271"/>
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.9.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.9.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.9.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.9.0"/>
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.6.2" />
     </ItemGroup>
     

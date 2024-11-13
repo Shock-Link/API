@@ -22,8 +22,8 @@ public sealed partial class AccountController
     /// <response code="401">Invalid username or password</response>
     [HttpPost("login")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.Unauthorized, "InvalidCredentials")]
-    [ProducesProblem(HttpStatusCode.Forbidden, "InvalidDomain")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status401Unauthorized, "application/problem+json")] // InvalidCredentials
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // InvalidDomain
     [MapToApiVersion("2")]
     public async Task<IActionResult> LoginV2(
         [FromBody] LoginV2 body,

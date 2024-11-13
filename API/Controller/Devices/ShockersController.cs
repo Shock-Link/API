@@ -19,7 +19,7 @@ public sealed partial class DevicesController
     /// <response code="404">Device does not exists or you do not have access to it.</response>
     [HttpGet("{deviceId}/shockers")]
     [ProducesResponseType<BaseResponse<IEnumerable<ShockerResponse>>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetShockers([FromRoute] Guid deviceId)
     {

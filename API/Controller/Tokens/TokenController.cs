@@ -51,7 +51,7 @@ public sealed partial class TokensController
     [HttpGet("{tokenId}")]
     [UserSessionOnly]
     [ProducesResponseType<TokenResponse>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ApiTokenNotFound")]    
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ApiTokenNotFound    
     public async Task<IActionResult> GetTokenById([FromRoute] Guid tokenId)
     {
         var apiToken = await _db.ApiTokens
@@ -80,7 +80,7 @@ public sealed partial class TokensController
     [HttpDelete("{tokenId}")]
     [UserSessionOnly]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ApiTokenNotFound")]    
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ApiTokenNotFound    
     public async Task<IActionResult> DeleteToken([FromRoute] Guid tokenId)
     {
         var apiToken = await _db.ApiTokens
@@ -136,7 +136,7 @@ public sealed partial class TokensController
     [HttpPatch("{tokenId}")]
     [UserSessionOnly]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ApiTokenNotFound")]    
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ApiTokenNotFound    
     public async Task<IActionResult> EditToken([FromRoute] Guid tokenId, [FromBody] EditTokenRequest body)
     {
         var token = await _db.ApiTokens

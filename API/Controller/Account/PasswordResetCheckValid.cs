@@ -20,7 +20,7 @@ public sealed partial class AccountController
     /// <response code="404">Password reset process not found</response>
     [HttpHead("recover/{passwordResetId}/{secret}")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "PasswordResetNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // PasswordResetNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> PasswordResetCheckValid([FromRoute] Guid passwordResetId, [FromRoute] string secret, CancellationToken cancellationToken)
     {

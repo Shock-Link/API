@@ -23,9 +23,9 @@ public sealed partial class SharesController
     /// <response code="500">Error while linking share code to your account</response>
     [HttpPost("code/{shareCodeId}")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareCodeNotFound")]
-    [ProducesProblem(HttpStatusCode.BadRequest, "CantLinkOwnShareCode")]
-    [ProducesProblem(HttpStatusCode.BadRequest, "ShockerAlreadyLinked")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareCodeNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // CantLinkOwnShareCode
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // ShockerAlreadyLinked
     [MapToApiVersion("1")]
     public async Task<IActionResult> LinkShareCode(
         [FromRoute] Guid shareCodeId,

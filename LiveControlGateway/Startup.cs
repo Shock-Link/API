@@ -1,13 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using Asp.Versioning.ApiExplorer;
-using Microsoft.OpenApi.Models;
 using OpenShock.Common;
-using OpenShock.Common.Constants;
 using OpenShock.Common.JsonSerialization;
 using OpenShock.Common.Services.Device;
 using OpenShock.Common.Services.Ota;
-using OpenShock.Common.Utils;
 using OpenShock.LiveControlGateway.PubSub;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -65,44 +61,9 @@ public sealed class Startup
 
         services.AddScoped<IDeviceService, DeviceService>();
         services.AddScoped<IOtaService, OtaService>();
-        
-        services.AddSwaggerGen(options =>
-            {
-                options.CustomOperationIds(e =>
-                    $"{e.ActionDescriptor.RouteValues["controller"]}_{e.ActionDescriptor.RouteValues["action"]}_{e.HttpMethod}");
-                options.SchemaFilter<AttributeFilter>();
-                options.ParameterFilter<AttributeFilter>();
-                options.OperationFilter<AttributeFilter>();
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "OpenShock.LiveControlGateway.xml"));
-                options.AddSecurityDefinition("OpenShockToken", new OpenApiSecurityScheme
-                {
-                    Name = "OpenShockToken",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "ApiKeyAuth",
-                    In = ParameterLocation.Header,
-                    Description = "API Token Authorization header."
-                });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = AuthConstants.AuthTokenHeaderName
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-                options.AddServer(new OpenApiServer { Url = "https://api.openshock.app" });
-                options.AddServer(new OpenApiServer { Url = "https://staging-api.openshock.app" });
-                options.AddServer(new OpenApiServer { Url = "https://localhost" });
-            }
-        );
 
-        services.ConfigureOptions<ConfigureSwaggerOptions>();
+        services.AddOpenApi();
+        
         //services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database");
 
         services.AddHostedService<RedisSubscriberService>(); 
@@ -120,18 +81,10 @@ public sealed class Startup
     {
         ApplicationLogging.LoggerFactory = loggerFactory;
         app.UseCommonOpenShockServices();
-
-        app.UseSwagger();
-        var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
-        app.UseSwaggerUI(c =>
-        {
-            foreach (var description in provider.ApiVersionDescriptions)
-                c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                    description.GroupName.ToUpperInvariant());
-        });
         
         app.UseEndpoints(endpoints =>
         {
+            endpoints.MapOpenApi();
             endpoints.MapControllers();
         });
     }

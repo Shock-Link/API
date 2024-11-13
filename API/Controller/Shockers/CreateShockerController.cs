@@ -23,8 +23,8 @@ public sealed partial class ShockerController
     [HttpPost]
     [ProducesResponseType<BaseResponse<Guid>>(StatusCodes.Status201Created)]
     [TokenPermission(PermissionType.Shockers_Edit)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
-    [ProducesProblem(HttpStatusCode.BadRequest, "TooManyShockers")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // TooManyShockers
     [MapToApiVersion("1")]
     public async Task<IActionResult> RegisterShocker(
         [FromBody] NewShocker body,

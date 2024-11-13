@@ -19,7 +19,7 @@ public sealed partial class DeviceController
     /// <response code="503">Unable to find suitable LCG node</response>
     [HttpGet("assignLCG")]
     [ProducesResponseType<BaseResponse<LcgNodeResponse>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.ServiceUnavailable, "NoLcgNodesAvailable")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status503ServiceUnavailable, "application/problem+json")] // NoLcgNodesAvailable
     public async Task<IActionResult> GetLiveControlGateway([FromServices] ILCGNodeProvisioner geoLocation,
         [FromServices] IWebHostEnvironment env)
     {

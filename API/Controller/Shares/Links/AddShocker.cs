@@ -20,9 +20,9 @@ public sealed partial class ShareLinksController
     /// <response code="409">Shocker already exists in share link</response>
     [HttpPost("{shareLinkId}/{shockerId}")]
     [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShareLinkNotFound")]
-    [ProducesProblem(HttpStatusCode.NotFound, "ShockerNotFound")]
-    [ProducesProblem(HttpStatusCode.Conflict, "ShockerAlreadyInShareLink")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareLinkNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, "application/problem+json")] // ShockerAlreadyInShareLink
     public async Task<IActionResult> AddShocker([FromRoute] Guid shareLinkId, [FromRoute] Guid shockerId)
     {
         var exists = await _db.ShockerSharesLinks.AnyAsync(x => x.OwnerId == CurrentUser.DbUser.Id && x.Id == shareLinkId);

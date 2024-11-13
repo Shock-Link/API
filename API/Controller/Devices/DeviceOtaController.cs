@@ -23,7 +23,7 @@ public sealed partial class DevicesController
     [HttpGet("{deviceId}/ota")]
     [UserSessionOnly]
     [ProducesResponseType<BaseResponse<IReadOnlyCollection<OtaItem>>>(StatusCodes.Status200OK)]
-    [ProducesProblem(HttpStatusCode.NotFound, "DeviceNotFound")]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetOtaUpdateHistory([FromRoute] Guid deviceId, [FromServices] IOtaService otaService)
     {
