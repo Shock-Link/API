@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenShock.API.Models.Requests;
 using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using OpenShock.API.Services.Account;
 using OpenShock.Common.Errors;
@@ -23,9 +24,9 @@ public sealed partial class AccountController
     /// <response code="200">User successfully signed up</response>
     /// <response code="400">Username or email already exists</response>
     [HttpPost("signup")]
-    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, "application/problem+json")] // EmailOrUsernameAlreadyExists
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // InvalidTurnstileResponse
+    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, MediaTypeNames.Application.ProblemJson)] // EmailOrUsernameAlreadyExists
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, MediaTypeNames.Application.ProblemJson)] // InvalidTurnstileResponse
     [MapToApiVersion("2")]
     public async Task<IActionResult> SignUpV2(
         [FromBody] SignUpV2 body,

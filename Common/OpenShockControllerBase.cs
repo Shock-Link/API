@@ -7,7 +7,6 @@ using OpenShock.Common.Problems;
 namespace OpenShock.Common;
 
 [Consumes(MediaTypeNames.Application.Json)]
-[ProducesDoc]
 public class OpenShockControllerBase : ControllerBase
 {
     [NonAction]

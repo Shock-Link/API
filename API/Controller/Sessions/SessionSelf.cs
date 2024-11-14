@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using OpenShock.API.Models.Response;
 using OpenShock.Common.Authentication.Attributes;
 using OpenShock.Common.Authentication.Services;
@@ -16,7 +17,7 @@ public sealed partial class SessionsController
     /// <exception cref="Exception"></exception>
     [HttpGet("self")]
     [UserSessionOnly]
-    [ProducesResponseType<LoginSessionResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<LoginSessionResponse>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     public LoginSessionResponse GetSelfSession([FromServices] IUserReferenceService userReferenceService)
     {
         var x = userReferenceService.AuthReference;

@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Mime;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
@@ -74,6 +75,6 @@ public sealed class DeviceAuthentication : AuthenticationHandler<AuthenticationS
         _authResultError ??= AuthResultError.UnknownError;
         Response.StatusCode = _authResultError.Status!.Value;
         _authResultError.AddContext(Context);
-        return Context.Response.WriteAsJsonAsync(_authResultError, _serializerOptions, contentType: "application/problem+json");
+        return Context.Response.WriteAsJsonAsync(_authResultError, _serializerOptions, contentType: MediaTypeNames.Application.ProblemJson);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenShock.Common.Errors;
@@ -18,7 +19,7 @@ public sealed partial class AdminController
     /// <response code="200">Paginated users</response>
     /// <response code="401">Unauthorized</response>
     [HttpGet("users")]
-    [ProducesResponseType<Paginated<AdminUsersView>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Paginated<AdminUsersView>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     public async Task<IActionResult> GetUsers(
         [FromQuery(Name = "$filter")] string filterQuery = "",
         [FromQuery(Name = "$orderby")] string orderbyQuery = "",

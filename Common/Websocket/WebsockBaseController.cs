@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using System.Net.Mime;
+using System.Net.WebSockets;
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -105,7 +106,7 @@ public abstract class WebsocketBaseController<T> : OpenShockControllerBase, IAsy
             HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             var response = WebsocketError.NonWebsocketRequest;
             response.AddContext(HttpContext);
-            await HttpContext.Response.WriteAsJsonAsync(response, jsonOptions.Value.SerializerOptions, contentType: "application/problem+json");
+            await HttpContext.Response.WriteAsJsonAsync(response, jsonOptions.Value.SerializerOptions, contentType: MediaTypeNames.Application.ProblemJson);
             await Close.CancelAsync();
             return;
         }
@@ -117,7 +118,7 @@ public abstract class WebsocketBaseController<T> : OpenShockControllerBase, IAsy
             var response = connectionPrecondition.AsT1.Value;
             HttpContext.Response.StatusCode = response.Status ?? StatusCodes.Status400BadRequest;
             response.AddContext(HttpContext);
-            await HttpContext.Response.WriteAsJsonAsync(response, jsonOptions.Value.SerializerOptions, contentType: "application/problem+json");
+            await HttpContext.Response.WriteAsJsonAsync(response, jsonOptions.Value.SerializerOptions, contentType: MediaTypeNames.Application.ProblemJson);
             
             await Close.CancelAsync();
             return;

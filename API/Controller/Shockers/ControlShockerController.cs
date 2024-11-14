@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -24,10 +25,10 @@ public sealed partial class ShockerController
     [MapToApiVersion("2")]
     [HttpPost("control")]
     [TokenPermission(PermissionType.Shockers_Use)]
-    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // Shocker not found
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status412PreconditionFailed, "application/problem+json")] // Shocker is paused
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // You don't have permission to control this shocker
+    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // Shocker not found
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status412PreconditionFailed, MediaTypeNames.Application.ProblemJson)] // Shocker is paused
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, MediaTypeNames.Application.ProblemJson)] // You don't have permission to control this shocker
     public async Task<IActionResult> SendControl(
         [FromBody] ControlRequest body,
         [FromServices] IHubContext<UserHub, IUserHub> userHub,
@@ -58,10 +59,10 @@ public sealed partial class ShockerController
     [MapToApiVersion("1")]
     [HttpPost("control")]
     [TokenPermission(PermissionType.Shockers_Use)]
-    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // Shocker not found
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status412PreconditionFailed, "application/problem+json")] // Shocker is paused
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // You don't have permission to control this shocker
+    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // Shocker not found
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status412PreconditionFailed, MediaTypeNames.Application.ProblemJson)] // Shocker is paused
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, MediaTypeNames.Application.ProblemJson)] // You don't have permission to control this shocker
     public Task<IActionResult> SendControl_DEPRECATED(
         [FromBody] IEnumerable<Common.Models.WebSocket.User.Control> body,
         [FromServices] IHubContext<UserHub, IUserHub> userHub,

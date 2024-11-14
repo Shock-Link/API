@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+﻿using System.Net.Mime;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenShock.API.Models.Response;
@@ -15,7 +16,7 @@ public sealed partial class ShockerController
     /// </summary>
     /// <response code="200">The shockers were successfully retrieved.</response>
     [HttpGet("shared")]
-    [ProducesResponseType<BaseResponse<IEnumerable<IEnumerable<OwnerShockerResponse>>>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BaseResponse<IEnumerable<IEnumerable<OwnerShockerResponse>>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [MapToApiVersion("1")]
     public async Task<IActionResult> ListSharedShockers()
     {

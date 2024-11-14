@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using NRedisStack.RedisStackCommands;
 using OpenShock.Common.Models;
 using OpenShock.Common.Problems;
@@ -16,7 +17,7 @@ public sealed partial class PublicController
     /// </summary>
     /// <response code="200">The statistics were successfully retrieved.</response>
     [HttpGet("stats")]
-    [ProducesResponseType<BaseResponse<StatsResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BaseResponse<StatsResponse>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     public async Task<IActionResult> GetOnlineDevicesStatistics([FromServices] IConnectionMultiplexer redisConnectionMultiplexer)
     {
         var ft = redisConnectionMultiplexer.GetDatabase().FT();

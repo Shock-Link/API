@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,9 @@ namespace OpenShock.API.Controller.Shares;
 public sealed partial class SharesController
 {
     [HttpPost("requests")]
-    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // UserNotFound
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // ShareCreateCannotShareWithSelf
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareCreateShockerNotFound
+    [ProducesResponseType<Guid>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // UserNotFound, ShareCreateShockerNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, MediaTypeNames.Application.ProblemJson)] // ShareCreateCannotShareWithSelf
     [ApiVersion("2")]
     public async Task<IActionResult> CreateShare([FromBody] CreateShareRequest data)
     {

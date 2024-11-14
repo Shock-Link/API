@@ -4,6 +4,7 @@ using OpenShock.API.Models.Requests;
 using OpenShock.API.Utils;
 using OpenShock.Common.Models;
 using System.Net;
+using System.Net.Mime;
 using OpenShock.Common.Errors;
 using OpenShock.Common.Problems;
 
@@ -21,9 +22,8 @@ public sealed partial class ShareLinksController
     /// <response code="404">Share link or shocker does not exist</response>
     /// <response code="400">Shocker does not exist in share link</response>
     [HttpPost("{shareLinkId}/{shockerId}/pause")]
-    [ProducesResponseType<BaseResponse<PauseReason>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareLinkNotFound
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotInShareLink
+    [ProducesResponseType<BaseResponse<PauseReason>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareLinkNotFound, ShockerNotInShareLink
     public async Task<IActionResult> PauseShocker([FromRoute] Guid shareLinkId, [FromRoute] Guid shockerId, [FromBody] PauseRequest body)
     {
         var exists = await _db.ShockerSharesLinks.AnyAsync(x => x.OwnerId == CurrentUser.DbUser.Id && x.Id == shareLinkId);

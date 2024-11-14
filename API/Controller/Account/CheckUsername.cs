@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using OpenShock.API.Models.Requests;
 using OpenShock.Common.Problems;
@@ -15,7 +16,7 @@ public sealed partial class AccountController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("username/check")]
-    [ProducesResponseType<UsernameCheckResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<UsernameCheckResponse>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     public async Task<IActionResult> CheckUsername(ChangeUsernameRequest data, CancellationToken cancellationToken)
     {
         var availability = await _accountService.CheckUsernameAvailability(data.Username, cancellationToken);

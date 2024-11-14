@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +24,8 @@ public sealed partial class ShockerController
     /// <response code="404">Shocker does not exist</response>
     [HttpPatch("{shockerId}")]
     [TokenPermission(PermissionType.Shockers_Edit)]
-    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound
+    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // DeviceNotFound, ShockerNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> EditShocker(
         [FromRoute] Guid shockerId,

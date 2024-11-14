@@ -7,6 +7,7 @@ using OpenShock.API.Services;
 using OpenShock.Common.Models;
 using OpenShock.Common.OpenShockDb;
 using System.Net;
+using System.Net.Mime;
 using OpenShock.Common.Authentication.Attributes;
 using OpenShock.Common.Errors;
 using OpenShock.Common.Problems;
@@ -23,8 +24,8 @@ public sealed partial class ShockerController
     /// <response code="200">OK</response>
     /// <response code="404">The shocker does not exist or you do not have access to it.</response>
     [HttpGet("{shockerId}/shares")]
-    [ProducesResponseType<BaseResponse<IEnumerable<ShareInfo>>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound    
+    [ProducesResponseType<BaseResponse<IEnumerable<ShareInfo>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetShockerShares([FromRoute] Guid shockerId)
     {
@@ -66,8 +67,8 @@ public sealed partial class ShockerController
     /// <param name="shockerId"></param>
     /// <response code="200">OK</response>
     [HttpGet("{shockerId}/shareCodes")]
-    [ProducesResponseType<BaseResponse<IEnumerable<ShareCodeInfo>>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound    
+    [ProducesResponseType<BaseResponse<IEnumerable<ShareCodeInfo>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> ShockerShareCodeList([FromRoute] Guid shockerId)
     {
@@ -102,8 +103,8 @@ public sealed partial class ShockerController
     /// <returns></returns>
     [HttpPost("{shockerId}/shares")]
     [TokenPermission(PermissionType.Shockers_Edit)]
-    [ProducesResponseType<BaseResponse<Guid>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound    
+    [ProducesResponseType<BaseResponse<Guid>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> ShockerShareCodeCreate(
         [FromRoute] Guid shockerId,
@@ -144,7 +145,7 @@ public sealed partial class ShockerController
     [HttpDelete("{shockerId}/shares/{sharedWithUserId}")]
     [TokenPermission(PermissionType.Shockers_Edit)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound    
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> ShockerShareCodeRemove(
         [FromRoute] Guid shockerId,
@@ -177,7 +178,7 @@ public sealed partial class ShockerController
     [HttpPatch("{shockerId}/shares/{sharedWithUserId}")]
     [TokenPermission(PermissionType.Shockers_Edit)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> ShockerShareCodeUpdate(
         [FromRoute] Guid shockerId,
@@ -219,8 +220,8 @@ public sealed partial class ShockerController
     /// <response code="404">The share code does not exist or you do not have access to it.</response>
     [HttpPost("{shockerId}/shares/{sharedWithUserId}/pause")]
     [TokenPermission(PermissionType.Shockers_Pause)]
-    [ProducesResponseType<BaseResponse<bool>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShockerNotFound    
+    [ProducesResponseType<BaseResponse<bool>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> ShockerShareCodePause(
         [FromRoute] Guid shockerId,

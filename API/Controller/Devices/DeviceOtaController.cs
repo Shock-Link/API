@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +23,8 @@ public sealed partial class DevicesController
     /// <response code="404">Could not find device or you do not have access to it</response>
     [HttpGet("{deviceId}/ota")]
     [UserSessionOnly]
-    [ProducesResponseType<BaseResponse<IReadOnlyCollection<OtaItem>>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
+    [ProducesResponseType<BaseResponse<IReadOnlyCollection<OtaItem>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetOtaUpdateHistory([FromRoute] Guid deviceId, [FromServices] IOtaService otaService)
     {

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using OpenShock.API.Models.Requests;
 using OpenShock.Common.Errors;
@@ -17,9 +18,9 @@ public sealed partial class AuthenticatedAccountController
     /// <exception cref="Exception"></exception>
     [HttpPost("username")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, "application/problem+json")] // UsernameTaken
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // UsernameInvalid
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, "application/problem+json")] // UsernameRecentlyChanged
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status409Conflict, MediaTypeNames.Application.ProblemJson)] // UsernameTaken
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, MediaTypeNames.Application.ProblemJson)] // UsernameInvalid
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, MediaTypeNames.Application.ProblemJson)] // UsernameRecentlyChanged
     public async Task<IActionResult> ChangeUsername(ChangeUsernameRequest data)
     {
         var result = await _accountService.ChangeUsername(CurrentUser.DbUser.Id, data.Username,

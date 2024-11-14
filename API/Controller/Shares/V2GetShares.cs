@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace OpenShock.API.Controller.Shares;
 public sealed partial class SharesController
 {
     [HttpGet]
-    [ProducesResponseType<IEnumerable<GenericIni>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<GenericIni>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ApiVersion("2")]
     public async Task<IEnumerable<GenericIni>> GetSharesByUsers()
     {
@@ -28,8 +29,8 @@ public sealed partial class SharesController
     }
     
     [HttpGet("{userId:guid}")]
-    [ProducesResponseType<ShareInfo>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // UserNotFound
+    [ProducesResponseType<ShareInfo>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // UserNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> GetSharesToUser(Guid userId)
     {

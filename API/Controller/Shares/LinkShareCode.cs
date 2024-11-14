@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,9 @@ public sealed partial class SharesController
     /// <response code="400">You cannot link your own shocker code / You already have this shocker linked to your account</response>
     /// <response code="500">Error while linking share code to your account</response>
     [HttpPost("code/{shareCodeId}")]
-    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareCodeNotFound
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // CantLinkOwnShareCode
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // ShockerAlreadyLinked
+    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareCodeNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, MediaTypeNames.Application.ProblemJson)] // CantLinkOwnShareCode, ShockerAlreadyLinked
     [MapToApiVersion("1")]
     public async Task<IActionResult> LinkShareCode(
         [FromRoute] Guid shareCodeId,

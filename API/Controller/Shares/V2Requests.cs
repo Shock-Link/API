@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace OpenShock.API.Controller.Shares;
 public sealed partial class SharesController
 {
     [HttpGet("requests/outstanding")]
-    [ProducesResponseType<IEnumerable<ShareRequestBaseItem>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<ShareRequestBaseItem>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ApiVersion("2")]
     public async Task<IEnumerable<ShareRequestBaseItem>> GetOutstandingRequestsList()
     {
@@ -47,7 +48,7 @@ public sealed partial class SharesController
     }
     
     [HttpGet("requests/incoming")]
-    [ProducesResponseType<IEnumerable<ShareRequestBaseItem>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<ShareRequestBaseItem>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ApiVersion("2")]
     public async Task<IEnumerable<ShareRequestBaseItem>> GetIncomingRequestsList()
     {
@@ -80,8 +81,8 @@ public sealed partial class SharesController
     }
     
     [HttpGet("requests/{id:guid}")]
-    [ProducesResponseType<ShareRequestBaseDetails>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
+    [ProducesResponseType<ShareRequestBaseDetails>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareRequestNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> GetRequest(Guid id)
     {
@@ -129,7 +130,7 @@ public sealed partial class SharesController
     
     [HttpDelete("requests/outgoing/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareRequestNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> DeleteRequest(Guid id)
     {
@@ -143,7 +144,7 @@ public sealed partial class SharesController
     
     [HttpDelete("requests/incoming/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareRequestNotFound
     [ApiVersion("2")]
     public async Task<IActionResult> DenyRequest(Guid id)
     {
@@ -157,7 +158,7 @@ public sealed partial class SharesController
 
     // [HttpPost("requests/incoming/{id:guid}")]
     // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareRequestNotFound
+    // [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareRequestNotFound
     // [ApiVersion("2")]
     // public async Task<IActionResult> RedeemRequest(Guid id)
     // {

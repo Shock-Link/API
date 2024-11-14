@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using Asp.Versioning;
 using OpenShock.Common;
@@ -24,7 +25,7 @@ public sealed class InstanceDetailsController : OpenShockControllerBase
     /// </summary>
     /// <response code="200">Instance details was successfully retrieved.</response>
     [HttpGet]
-    [ProducesResponseType<InstanceDetailsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<InstanceDetailsResponse>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [MapToApiVersion("1")]
     public InstanceDetailsResponse GetNodeInfo([FromServices] LCGConfig lcgConfig)
     {

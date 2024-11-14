@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OpenShock.API.Models.Response;
 using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using OpenShock.Common.Errors;
 using OpenShock.Common.Problems;
@@ -18,8 +19,8 @@ public sealed partial class DevicesController
     /// <response code="200">All shockers for the device</response>
     /// <response code="404">Device does not exists or you do not have access to it.</response>
     [HttpGet("{deviceId}/shockers")]
-    [ProducesResponseType<BaseResponse<IEnumerable<ShockerResponse>>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
+    [ProducesResponseType<BaseResponse<IEnumerable<ShockerResponse>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // DeviceNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetShockers([FromRoute] Guid deviceId)
     {

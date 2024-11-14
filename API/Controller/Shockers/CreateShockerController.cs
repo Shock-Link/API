@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +22,10 @@ public sealed partial class ShockerController
     /// <response code="400">You can have a maximum of 11 Shockers per Device.</response>
     /// <response code="404">Device does not exist</response>
     [HttpPost]
-    [ProducesResponseType<BaseResponse<Guid>>(StatusCodes.Status201Created)]
+    [ProducesResponseType<BaseResponse<Guid>>(StatusCodes.Status201Created, MediaTypeNames.Application.Json)]
     [TokenPermission(PermissionType.Shockers_Edit)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // DeviceNotFound
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, "application/problem+json")] // TooManyShockers
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // DeviceNotFound
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status400BadRequest, MediaTypeNames.Application.ProblemJson)] // TooManyShockers
     [MapToApiVersion("1")]
     public async Task<IActionResult> RegisterShocker(
         [FromBody] NewShocker body,

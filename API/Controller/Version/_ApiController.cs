@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.Mime;
+using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenShock.API.Utils;
@@ -26,7 +27,7 @@ public sealed partial class VersionController : OpenShockControllerBase
     /// </summary>
     /// <response code="200">The version was successfully retrieved.</response>
     [HttpGet]
-    [ProducesResponseType<BaseResponse<RootResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BaseResponse<RootResponse>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     public IActionResult GetBackendVersion([FromServices] ApiConfig apiConfig)
     {
         return RespondSuccessLegacy(

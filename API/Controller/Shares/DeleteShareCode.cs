@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Mime;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +19,8 @@ public sealed partial class SharesController
     /// <response code="200">Deleted share code</response>
     /// <response code="404">Share code not found or does not belong to you</response>
     [HttpDelete("code/{shareCodeId}")]
-    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, "application/problem+json")] // ShareCodeNotFound
+    [ProducesResponseType<BaseResponse<object>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShareCodeNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> DeleteShareCode([FromRoute] Guid shareCodeId)
     {

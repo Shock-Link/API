@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using OpenShock.Common.Models;
 using OpenShock.Common.Problems;
 
@@ -11,7 +12,7 @@ public sealed partial class UsersController
     /// </summary>
     /// <response code="200">The user's information was successfully retrieved.</response>
     [HttpGet("self")]
-    [ProducesResponseType<BaseResponse<SelfResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BaseResponse<SelfResponse>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     public BaseResponse<SelfResponse> GetSelf() => new()
     {
         Data = new SelfResponse
