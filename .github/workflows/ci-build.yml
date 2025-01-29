@@ -19,6 +19,30 @@ env:
 
 jobs:
 
+  helm:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Find latest tag
+        uses: oprypin/find-latest-tag@v1
+        id: latest-tag
+        with:
+          repository: ${{ github.repository }}
+          regex: '^[0-9]+.[0-9]+.[0-9]+$'
+          releases-only: false
+          
+      - name: Package Helm chart
+        run: helm package ./charts/openshock/ --app-version ${{ steps.latest-tag.outputs.tag }}
+
+      - name: Helm registry login
+        run: echo ${{ github.token }} | helm registry login $REGISTRY/${{ github.actor }} --username ${{ github.actor }} --password-stdin
+
+      - name: Push Helm chart
+        run: helm push ./openshock-0.1.0.tgz oci://$REGISTRY/${{ github.actor }}
+
   build:
     runs-on: ubuntu-latest
 
@@ -146,7 +170,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
-
+  
   deploy-production:
     runs-on: ubuntu-latest
     needs: containerize

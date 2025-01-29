@@ -98,6 +98,135 @@ Run with `docker compose up -d`
 You could also bring your own reverse proxy.  
 You would need to remove traefik from the `docker-compose.yml` and route the traffic in your reverse proxy.
 
+## Using Kubernetes and Helm
+Kubernetes and Helm are very powerful and well liked but they are not beginner friendly. Use docker compose if you want something easy.
+
+Openshock has some dependencies. It's not Openshock's place to tell you how to install them. 
+Dependencies are:
+- A Postgres database. This is used for storing user data including passwords. The Openshock API needs a connection string.
+- A Redis cluster. This is used for storing session data and as a messaging bus. It needs ReJson, RediSearch
+ and an extra argument: "--notify-keyspace-events KEA" 
+    <details>
+    <summary>Example Redis</summary>
+    Here is a very basic but not necessarily good deployment of Redis that works.
+
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: redis
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
+        app: redis
+    template:
+        metadata:
+        labels:
+            app: redis
+        spec:
+        containers:
+            - name: redis
+            image: redis/redis-stack
+            env: 
+                - name: REDIS_ARGS
+                value: '--notify-keyspace-events KEA'
+            ports:
+                - name: redis
+                containerPort: 6379
+                protocol: TCP
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: redis
+    spec:
+    type: ClusterIP
+    ports:
+        - port: 6379
+        targetPort: redis
+        protocol: TCP
+        name: redis
+    selector:
+        app: redis
+    ```
+
+    </details>
+
+Steps:
+1. Create a Kubernetes Secret containing the database connection string:
+    ```sh
+    kubectl create secret generic openshock --from-literal=databaseConnection='Host=10.0.0.5;Port=5432;Database=openshock;Username=openshock;Password=password123'
+    ```
+    Also include any other secrets you may want to use in the deployment. Such as a Redis password and mail credentials. See [values.yaml](./charts/openshock/values.yaml) for more.
+1. Create a yaml file for your Helm values. See [values.yaml](./charts/openshock/values.yaml) for details. 
+   <details>
+   <summary>Example values.yaml</summary>
+   
+   ```yaml
+    appConfig:
+      database:
+        connectionSecretName: openshock
+        connectionSecretKey: databaseConnection
+      redis:
+        host: redis
+      frontend:
+        name: MyOpenshock
+        baseUrl: https://myopenshock.com
+        shortUrl: https://myopenshock.com
+        cookieDomain: myopenshock.com
+      apiUrl: https://api.myopenshock.com
+      liveControllerGateway:
+        countryCode: NZ
+        fcdn: lcg.myopenshock.com
+
+    api:
+      ingress:
+        enabled: true
+        hosts:
+          - host: api.myopenshock.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: openshock-api-tls
+             hosts:
+               - api.myopenshock.com
+
+    liveControllerGateway:
+      ingress:
+        enabled: true
+        hosts:
+          - host: lcg.myopenshock.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: openshock-lcg-tls
+        hosts:
+          - lcg.myopenshock.com
+
+    webUi:
+      enabled: true
+      ingress:
+        enabled: true
+        hosts:
+          - host: myopenshock.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: openshock-webui-tls
+            hosts:
+              - myopenshock.com
+   ```
+   </details>
+
+1. Create a Helm release:
+   ```sh
+   helm upgrade --install openshock oci://ghcr.io/OpenShock/openshock -f values.yaml
+   ```
+
 ## Support development!
 
 You can support the OpenShock Dev Team here: [Sponsor OpenShock](https://github.com/sponsors/OpenShock)
