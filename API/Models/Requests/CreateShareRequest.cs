@@ -6,7 +6,7 @@ namespace OpenShock.API.Models.Requests;
 public sealed class CreateShareRequest
 {
     [MaxLength(HardLimits.CreateShareRequestMaxShockers)]
-    public required IEnumerable<ShockerPermLimitPairWithId> Shockers { get; set; }
+    public required ShockerPermLimitPairWithId[] Shockers { get; set; }
     public Guid? User { get; set; } = null;
 }
 

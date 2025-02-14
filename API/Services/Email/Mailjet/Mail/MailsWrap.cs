@@ -2,5 +2,5 @@
 
 public sealed class MailsWrap
 {
-    public required IEnumerable<Mail.MailBase> Messages { get; set; }
+    public required MailBase[] Messages { get; set; }
 }

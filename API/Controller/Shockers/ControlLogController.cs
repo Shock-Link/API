@@ -24,7 +24,7 @@ public sealed partial class ShockerController
     /// <response code="200">The logs</response>
     /// <response code="404">Shocker does not exist</response>
     [HttpGet("{shockerId}/logs")]
-    [ProducesResponseType<BaseResponse<IEnumerable<LogEntry>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<BaseResponse<IAsyncEnumerable<LogEntry>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetShockerLogs([FromRoute] Guid shockerId, [FromQuery] uint offset = 0,
@@ -33,8 +33,12 @@ public sealed partial class ShockerController
         var exists = await _db.Shockers.AnyAsync(x => x.DeviceNavigation.Owner == CurrentUser.Id && x.Id == shockerId);
         if (!exists) return Problem(ShockerError.ShockerNotFound);
 
-        var logs = await _db.ShockerControlLogs.Where(x => x.ShockerId == shockerId)
-            .OrderByDescending(x => x.CreatedOn).Skip((int)offset).Take((int)limit).Select(x => new LogEntry
+        var logs = _db.ShockerControlLogs
+            .Where(x => x.ShockerId == shockerId)
+            .OrderByDescending(x => x.CreatedOn)
+            .Skip((int)offset)
+            .Take((int)limit)
+            .Select(x => new LogEntry
             {
                 Id = x.Id,
                 Duration = x.Duration,
@@ -56,7 +60,8 @@ public sealed partial class ShockerController
                         Image = x.ControlledByNavigation.GetImageUrl(),
                         CustomName = x.CustomName
                     }
-            }).ToArrayAsync();
+            })
+            .AsAsyncEnumerable();
 
         return RespondSuccessLegacy(logs);
     }

@@ -2,6 +2,6 @@
 
 public sealed class ControlRequest
 {
-    public required IEnumerable<WebSocket.User.Control> Shocks { get; set; }
+    public required WebSocket.User.Control[] Shocks { get; set; }
     public string? CustomName { get; set; } = null;
 }

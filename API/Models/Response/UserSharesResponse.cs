@@ -5,7 +5,7 @@ namespace OpenShock.API.Models.Response;
 
 public sealed class UserSharesResponse
 {
-    public required IEnumerable<UserShareInfo> Shockers { get; init; }
+    public required UserShareInfo[] Shockers { get; init; }
 }
 
 public sealed class UserShareInfo : GenericIn

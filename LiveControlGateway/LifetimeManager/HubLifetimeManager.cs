@@ -214,7 +214,7 @@ public sealed class HubLifetimeManager
     /// <param name="shocks"></param>
     /// <returns></returns>
     public async Task<OneOf<Success, DeviceNotFound>> Control(Guid device,
-        IEnumerable<ControlMessage.ShockerControlInfo> shocks)
+        IList<ControlMessage.ShockerControlInfo> shocks)
     {
         if (!_lifetimes.TryGetValue(device, out var deviceLifetime)) return new DeviceNotFound();
         await deviceLifetime.Control(shocks);

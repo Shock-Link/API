@@ -25,7 +25,7 @@ public class OpenShockAuthorizationMiddlewareResultHandler : IAuthorizationMiddl
     {
         if (authorizeResult.Forbidden)
         {
-            var failedRequirements = authorizeResult.AuthorizationFailure?.FailedRequirements.Select(x => x.ToString() ?? "error") ?? Array.Empty<string>();
+            var failedRequirements = authorizeResult.AuthorizationFailure?.FailedRequirements.Select(x => x.ToString() ?? "error").ToArray() ?? [];
             var problem = AuthorizationError.PolicyNotMet(failedRequirements);
             context.Response.StatusCode = problem.Status!.Value;
             problem.AddContext(context);

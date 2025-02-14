@@ -65,7 +65,7 @@ public sealed partial class ShockerController
     [ProducesResponseType<OpenShockProblem>(StatusCodes.Status412PreconditionFailed, MediaTypeNames.Application.ProblemJson)] // Shocker is paused
     [ProducesResponseType<OpenShockProblem>(StatusCodes.Status403Forbidden, MediaTypeNames.Application.ProblemJson)] // You don't have permission to control this shocker
     public Task<IActionResult> SendControl_DEPRECATED(
-        [FromBody] IEnumerable<Common.Models.WebSocket.User.Control> body,
+        [FromBody] Common.Models.WebSocket.User.Control[] body,
         [FromServices] IHubContext<UserHub, IUserHub> userHub,
         [FromServices] IRedisPubService redisPubService)
     {

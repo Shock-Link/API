@@ -112,7 +112,7 @@ public sealed class ShareLinkHub : Hub<IShareLinkHub>
         await Clients.Caller.Welcome(user != null ? AuthType.Authenticated : AuthType.Guest);
     }
 
-    public Task Control(IEnumerable<Common.Models.WebSocket.User.Control> shocks)
+    public Task Control(Models.WebSocket.User.Control[] shocks)
     {
         if (!_tokenPermissions.IsAllowedAllowOnNull(PermissionType.Shockers_Use)) return Task.CompletedTask;
         

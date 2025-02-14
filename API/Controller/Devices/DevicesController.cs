@@ -23,17 +23,19 @@ public sealed partial class DevicesController
     /// </summary>
     /// <response code="200">All devices for the current user</response>
     [HttpGet]
-    [ProducesResponseType<BaseResponse<Models.Response.ResponseDevice[]>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<BaseResponse<IAsyncEnumerable<Models.Response.ResponseDevice>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [MapToApiVersion("1")]
     public async Task<IActionResult> ListDevices()
     {
-        var devices = await _db.Devices.Where(x => x.Owner == CurrentUser.Id)
+        var devices = _db.Devices
+            .Where(x => x.Owner == CurrentUser.Id)
             .Select(x => new Models.Response.ResponseDevice
             {
                 Id = x.Id,
                 Name = x.Name,
                 CreatedOn = x.CreatedOn
-            }).ToArrayAsync();
+            })
+            .AsAsyncEnumerable();
 
         return RespondSuccessLegacy(devices);
     }

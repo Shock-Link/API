@@ -1,4 +1,5 @@
-﻿using OpenShock.Common.Authentication.AuthenticationHandlers;
+﻿using Microsoft.EntityFrameworkCore;
+using OpenShock.Common.Authentication.AuthenticationHandlers;
 using OpenShock.Common.Constants;
 using OpenShock.Common.Redis;
 using Redis.OM;
@@ -41,9 +42,9 @@ public sealed class SessionService : ISessionService
         return publicId;
     }
 
-    public async Task<IEnumerable<LoginSession>> ListSessionsByUserId(Guid userId)
+    public async Task<LoginSession[]> ListSessionsByUserId(Guid userId)
     {
-        var sessions = await _loginSessions.Where(x => x.UserId == userId).ToListAsync();
+        var sessions = await _loginSessions.Where(x => x.UserId == userId).ToArrayAsync();
 
         var needsSave = false;
         foreach (var session in sessions)

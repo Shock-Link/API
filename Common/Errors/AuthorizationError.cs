@@ -18,9 +18,9 @@ public static class AuthorizationError
         "This endpoint is only available to use with api tokens", HttpStatusCode.Forbidden);
 
     public static TokenPermissionProblem TokenPermissionMissing(PermissionType requiredPermission,
-        IEnumerable<PermissionType> grantedPermissions) => new("Authorization.Token.PermissionMissing",
+        List<PermissionType> grantedPermissions) => new("Authorization.Token.PermissionMissing",
         $"You do not have the required permission to access this endpoint. Missing permission: {requiredPermission.ToString()}",
         requiredPermission, grantedPermissions, HttpStatusCode.Forbidden);
     
-    public static PolicyNotMetProblem PolicyNotMet(IEnumerable<string> failedRequirements) => new PolicyNotMetProblem(failedRequirements);
+    public static PolicyNotMetProblem PolicyNotMet(string[] failedRequirements) => new PolicyNotMetProblem(failedRequirements);
 }

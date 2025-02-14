@@ -25,23 +25,22 @@ public sealed partial class TokensController
     /// </summary>
     /// <response code="200">All tokens for the current user</response>
     [HttpGet]
-    [ProducesResponseType<IEnumerable<TokenResponse>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
-    public async Task<IEnumerable<TokenResponse>> ListTokens()
+    [ProducesResponseType<IAsyncEnumerable<TokenResponse>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    public IAsyncEnumerable<TokenResponse> ListTokens()
     {
-        var apiTokens = await _db.ApiTokens
+        return _db.ApiTokens
             .Where(x => x.UserId == CurrentUser.Id && (x.ValidUntil == null || x.ValidUntil > DateTime.UtcNow))
             .OrderBy(x => x.CreatedOn)
             .Select(x => new TokenResponse
-        {
-            CreatedOn = x.CreatedOn,
-            ValidUntil = x.ValidUntil,
-            LastUsed = x.LastUsed,
-            Permissions = x.Permissions,
-            Name = x.Name,
-            Id = x.Id
-        }).ToListAsync();
-
-        return apiTokens;
+            {
+                CreatedOn = x.CreatedOn,
+                ValidUntil = x.ValidUntil,
+                LastUsed = x.LastUsed,
+                Permissions = x.Permissions,
+                Name = x.Name,
+                Id = x.Id
+            })
+            .AsAsyncEnumerable();
     }
 
     /// <summary>

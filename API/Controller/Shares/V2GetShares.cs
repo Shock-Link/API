@@ -15,18 +15,21 @@ namespace OpenShock.API.Controller.Shares;
 public sealed partial class SharesController
 {
     [HttpGet]
-    [ProducesResponseType<IEnumerable<GenericIni>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<IAsyncEnumerable<GenericIni>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ApiVersion("2")]
-    public async Task<GenericIni[]> GetSharesByUsers()
+    public IAsyncEnumerable<GenericIni> GetSharesByUsers()
     {
-        var sharedToUsers = await _db.ShockerShares.Where(x => x.Shocker.DeviceNavigation.Owner == CurrentUser.Id)
+        return _db.ShockerShares
+            .Where(x => x.Shocker.DeviceNavigation.Owner == CurrentUser.Id)
             .Select(x => new GenericIni
             {
                 Id = x.SharedWithNavigation.Id,
                 Image = x.SharedWithNavigation.GetImageUrl(),
                 Name = x.SharedWithNavigation.Name
-            }).OrderBy(x => x.Name).Distinct().ToArrayAsync();
-        return sharedToUsers;
+            })
+            .OrderBy(x => x.Name)
+            .Distinct()
+            .AsAsyncEnumerable();
     }
     
     [HttpGet("{userId:guid}")]
@@ -35,7 +38,8 @@ public sealed partial class SharesController
     [ApiVersion("2")]
     public async Task<IActionResult> GetSharesToUser(Guid userId)
     {
-        var sharedWithUser = await _db.ShockerShares.Where(x => x.Shocker.DeviceNavigation.Owner == CurrentUser.Id && x.SharedWith == userId)
+        var sharedWithUser = await _db.ShockerShares
+            .Where(x => x.Shocker.DeviceNavigation.Owner == CurrentUser.Id && x.SharedWith == userId)
             .Select(x => new UserShareInfo
             {
                 Id = x.Shocker.Id,
@@ -54,7 +58,8 @@ public sealed partial class SharesController
                     Intensity = x.LimitIntensity
                 },
                 Paused = x.Paused
-            }).ToArrayAsync();
+            })
+            .ToArrayAsync();
         
         if(sharedWithUser.Length == 0)
         {

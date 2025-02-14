@@ -41,23 +41,25 @@ public sealed partial class AdminController
                     }
                 }).ToArrayAsync();
 
-        return RespondSuccessLegacy(allOnlineDevices.Select(x =>
-            {
-                var dbItem = dbLookup.First(y => y.Id == x.Id);
-                return new AdminOnlineDeviceResponse
+        return RespondSuccessLegacy(
+            allOnlineDevices
+                .Select(x =>
                 {
-                    Id = x.Id,
-                    FirmwareVersion = x.FirmwareVersion,
-                    Gateway = x.Gateway,
-                    Owner = dbItem.Owner,
-                    Name = dbItem.Name,
-                    ConnectedAt = x.ConnectedAt,
-                    UserAgent = x.UserAgent,
-                    BootedAt = x.BootedAt,
-                    LatencyMs = x.LatencyMs,
-                    Rssi = x.Rssi,
-                };
-            })
+                    var dbItem = dbLookup.First(y => y.Id == x.Id);
+                    return new AdminOnlineDeviceResponse
+                    {
+                        Id = x.Id,
+                        FirmwareVersion = x.FirmwareVersion,
+                        Gateway = x.Gateway,
+                        Owner = dbItem.Owner,
+                        Name = dbItem.Name,
+                        ConnectedAt = x.ConnectedAt,
+                        UserAgent = x.UserAgent,
+                        BootedAt = x.BootedAt,
+                        LatencyMs = x.LatencyMs,
+                        Rssi = x.Rssi,
+                    };
+                })
         );
     }
 

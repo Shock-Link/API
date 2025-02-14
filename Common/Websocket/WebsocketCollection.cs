@@ -66,11 +66,9 @@ public sealed class WebsocketCollection<T> where T : class
             await websocketController.QueueMessage(msg);
     }
 
-    public IEnumerable<IWebsocketController<T>> GetConnectedById(IEnumerable<Guid> ids)
+    public IWebsocketController<T>[] GetConnectedById(IEnumerable<Guid> ids)
     {
-        var found = new List<IWebsocketController<T>>();
-        foreach (var id in ids) found.AddRange(GetConnections(id));
-        return found;
+        return ids.SelectMany(GetConnections).ToArray();
     }
 
     public uint Count => (uint)_websockets.Sum(x => x.Value.Count);

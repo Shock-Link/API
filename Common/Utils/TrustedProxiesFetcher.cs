@@ -58,7 +58,7 @@ public static class TrustedProxiesFetcher
 
     private static readonly char[] NewLineSeperators = [' ', '\r', '\n', '\t'];
     
-    private static async Task<IEnumerable<IPNetwork>> FetchCloudflareIPs(Uri uri, CancellationToken ct)
+    private static async Task<List<IPNetwork>> FetchCloudflareIPs(Uri uri, CancellationToken ct)
     {
         using var response = await Client.GetAsync(uri, ct);
         var stringResponse = await response.Content.ReadAsStringAsync(ct);
@@ -66,11 +66,12 @@ public static class TrustedProxiesFetcher
         return ParseNetworks(stringResponse.AsSpan());
     }
 
-    private static IEnumerable<IPNetwork> ParseNetworks(ReadOnlySpan<char> response)
+    private static List<IPNetwork> ParseNetworks(ReadOnlySpan<char> response)
     {
         var ranges = response.Split(NewLineSeperators);
 
         var networks = new List<IPNetwork>();
+
         foreach (var range in ranges)
         {
             networks.Add(IPNetwork.Parse(response[range]));
@@ -79,7 +80,7 @@ public static class TrustedProxiesFetcher
         return networks;
     }
     
-    private static async Task<IEnumerable<IPNetwork>> FetchCloudflareIPs()
+    private static async Task<IPNetwork[]> FetchCloudflareIPs()
     {
         try
         {

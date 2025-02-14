@@ -9,7 +9,7 @@ namespace OpenShock.Common.Hubs;
 public interface IUserHub
 {
     Task Welcome(string connectionId);
-    Task DeviceStatus(IEnumerable<DeviceOnlineState> deviceOnlineStates);
+    Task DeviceStatus(IList<DeviceOnlineState> deviceOnlineStates);
     Task Log(ControlLogSender sender, IEnumerable<ControlLog> logs);
     Task DeviceUpdate(Guid deviceId, DeviceUpdateType type);
     

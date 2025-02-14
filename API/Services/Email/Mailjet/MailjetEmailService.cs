@@ -73,14 +73,14 @@ public sealed class MailjetEmailService : IEmailService, IDisposable
 
     #endregion
     
-    private Task SendMail(MailBase templateMail, CancellationToken cancellationToken = default) => SendMails(new[] { templateMail }, cancellationToken);
+    private Task SendMail(MailBase templateMail, CancellationToken cancellationToken = default) => SendMails([templateMail], cancellationToken);
 
     private static readonly JsonSerializerOptions Options = new JsonSerializerOptions {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
     
-    private async Task SendMails(IEnumerable<MailBase> mails, CancellationToken cancellationToken = default)
+    private async Task SendMails(MailBase[] mails, CancellationToken cancellationToken = default)
     {
         if (_logger.IsEnabled(LogLevel.Debug)) _logger.LogDebug("Sending mails {@Mails}", mails);
 

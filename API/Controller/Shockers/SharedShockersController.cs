@@ -1,13 +1,22 @@
-﻿using System.Net.Mime;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenShock.API.Models.Response;
 using OpenShock.Common.Models;
-using OpenShock.Common.Problems;
 using OpenShock.Common.Utils;
+using System.Net.Mime;
 
 namespace OpenShock.API.Controller.Shockers;
+
+file record OwnerGroupKey(Guid OwnerId, string OwnerName, string OwnerEmail)
+{
+    public override int GetHashCode() => OwnerId.GetHashCode();
+}
+
+file record DeviceGroupKey(Guid DeviceId, string DeviceName)
+{
+    public override int GetHashCode() => DeviceId.GetHashCode();
+}
 
 public sealed partial class ShockerController
 {
@@ -16,12 +25,15 @@ public sealed partial class ShockerController
     /// </summary>
     /// <response code="200">The shockers were successfully retrieved.</response>
     [HttpGet("shared")]
-    [ProducesResponseType<BaseResponse<IEnumerable<IEnumerable<OwnerShockerResponse>>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<BaseResponse<IEnumerable<OwnerShockerResponse>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [MapToApiVersion("1")]
     public async Task<IActionResult> ListSharedShockers()
     {
-        var sharedShockersRaw = await _db.ShockerShares.Where(x => x.SharedWith == CurrentUser.Id).Select(x =>
-            new
+        var sharedShockersData = await _db.ShockerShares
+            .AsNoTracking()
+            .Include(x => x.Shocker.DeviceNavigation.OwnerNavigation)
+            .Where(x => x.SharedWith == CurrentUser.Id)
+            .Select(x => new
             {
                 OwnerId = x.Shocker.DeviceNavigation.OwnerNavigation.Id,
                 OwnerName = x.Shocker.DeviceNavigation.OwnerNavigation.Name,
@@ -46,33 +58,29 @@ public sealed partial class ShockerController
                         Intensity = x.LimitIntensity
                     }
                 }
-            }).ToArrayAsync();
+            })
+            .ToArrayAsync();
 
-        var shared = new Dictionary<Guid, OwnerShockerResponse>();
-        foreach (var shocker in sharedShockersRaw)
-        {
-            // No I dont want unnecessary alloc
-            // ReSharper disable once CanSimplifyDictionaryLookupWithTryAdd
-            if (!shared.ContainsKey(shocker.OwnerId))
-                shared[shocker.OwnerId] = new OwnerShockerResponse
-                {
-                    Id = shocker.OwnerId,
-                    Name = shocker.OwnerName,
-                    Image = GravatarUtils.GetUserImageUrl(shocker.OwnerEmail)
-                };
+        var sharesResponse = sharedShockersData
+            .GroupBy(x => new OwnerGroupKey(x.OwnerId, x.OwnerName, x.OwnerEmail))
+            .Select(ownerGroup => new OwnerShockerResponse
+            {
+                Id = ownerGroup.Key.OwnerId,
+                Name = ownerGroup.Key.OwnerName,
+                Image = GravatarUtils.GetUserImageUrl(ownerGroup.Key.OwnerEmail),
+                Devices = ownerGroup
+                    .GroupBy(x => new DeviceGroupKey(x.DeviceId, x.DeviceName))
+                    .Select(deviceGroup => new OwnerShockerResponse.SharedDevice
+                    {
+                        Id = deviceGroup.Key.DeviceId,
+                        Name = deviceGroup.Key.DeviceName,
+                        Shockers = deviceGroup
+                            .Select(x => x.Shocker)
+                            .ToArray(),
+                    })
+                    .ToArray()
+            });
 
-            var sharedUser = shared[shocker.OwnerId];
-
-            if (sharedUser.Devices.All(x => x.Id != shocker.DeviceId))
-                sharedUser.Devices.Add(new OwnerShockerResponse.SharedDevice
-                {
-                    Id = shocker.DeviceId,
-                    Name = shocker.DeviceName
-                });
-            
-            sharedUser.Devices.Single(x => x.Id == shocker.DeviceId).Shockers.Add(shocker.Shocker);
-        }
-
-        return RespondSuccessLegacy(shared.Values);
+        return RespondSuccessLegacy(sharesResponse);
     }
 }

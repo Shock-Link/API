@@ -23,16 +23,16 @@ public enum PermissionType
 
 public static class PermissionTypeExtensions
 {
-    public static bool IsAllowed(this PermissionType permissionType, IEnumerable<PermissionType> permissions) =>
+    public static bool IsAllowed(this PermissionType permissionType, IReadOnlyCollection<PermissionType> permissions) =>
         IsAllowedInternal(permissions, permissionType);
 
-    public static bool IsAllowed(this IEnumerable<PermissionType> permissions, PermissionType permissionType) =>
+    public static bool IsAllowed(this IReadOnlyCollection<PermissionType> permissions, PermissionType permissionType) =>
         IsAllowedInternal(permissions, permissionType);
     
     public static bool IsAllowedAllowOnNull(this IReadOnlyCollection<PermissionType>? permissions,
         PermissionType permissionType) => permissions == null || IsAllowedInternal(permissions, permissionType);
     
-    private static bool IsAllowedInternal(IEnumerable<PermissionType> permissions, PermissionType permissionType)
+    private static bool IsAllowedInternal(IReadOnlyCollection<PermissionType> permissions, PermissionType permissionType)
     {
         // ReSharper disable once PossibleMultipleEnumeration
         return permissions.Contains(permissionType) || permissions.Any(x =>
@@ -58,24 +58,30 @@ public static class PermissionTypeBindings
 
     static PermissionTypeBindings()
     {
-        var bindings = Init().ToArray();
+        var bindings = GetBindings();
         PermissionTypeToName = bindings.ToDictionary(x => x.PermissionType, x => x);
         NameToPermissionType = bindings.ToDictionary(x => x.Name, x => x);
     }
 
-    private static IEnumerable<PermissionTypeRecord> Init()
+    private static PermissionTypeRecord[] GetBindings()
     {
-        var enumValues = Enum.GetValues<PermissionType>();
-        var fields = typeof(PermissionType).GetFields();
+        var permissionTypes = Enum.GetValues<PermissionType>();
+        var permissionTypeFields = typeof(PermissionType).GetFields();
 
-        foreach (var permissionType in enumValues)
+        var bindings = new PermissionTypeRecord[permissionTypes.Length];
+
+        for (var i = 0; i < permissionTypes.Length; i++)
         {
-            var field = fields.First(x => x.Name == permissionType.ToString());
+            var permissionType = permissionTypes[i];
+
+            var field = permissionTypeFields.First(x => x.Name == permissionType.ToString());
             var parents = field.GetCustomAttributes<ParentPermissionAttribute>().Select(x => x.PermissionType);
             var name = field.GetCustomAttribute<PgNameAttribute>()!.PgName;
 
-            yield return new PermissionTypeRecord(permissionType, name, parents.ToArray());
+            bindings[i] = new PermissionTypeRecord(permissionType, name, parents.ToArray());
         }
+
+        return bindings;
     }
 }
 

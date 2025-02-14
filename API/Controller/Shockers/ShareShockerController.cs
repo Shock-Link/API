@@ -25,15 +25,17 @@ public sealed partial class ShockerController
     /// <response code="200">OK</response>
     /// <response code="404">The shocker does not exist or you do not have access to it.</response>
     [HttpGet("{shockerId}/shares")]
-    [ProducesResponseType<BaseResponse<IEnumerable<ShareInfo>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<BaseResponse<IAsyncEnumerable<ShareInfo>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> GetShockerShares([FromRoute] Guid shockerId)
     {
         var owns = await _db.Shockers.AnyAsync(x => x.DeviceNavigation.Owner == CurrentUser.Id && x.Id == shockerId);
         if (!owns) return Problem(ShockerError.ShockerNotFound);
-        var shares = await _db.ShockerShares
-            .Where(x => x.ShockerId == shockerId && x.Shocker.DeviceNavigation.Owner == CurrentUser.Id).Select(x =>
+
+        var shares = _db.ShockerShares
+            .Where(x => x.ShockerId == shockerId && x.Shocker.DeviceNavigation.Owner == CurrentUser.Id)
+            .Select(x =>
                 new ShareInfo
                 {
                     Paused = x.Paused,
@@ -57,7 +59,8 @@ public sealed partial class ShockerController
                         Intensity = x.LimitIntensity
                     }
                 }
-            ).ToArrayAsync();
+            )
+            .AsAsyncEnumerable();
 
         return RespondSuccessLegacy(shares);
     }
@@ -68,21 +71,22 @@ public sealed partial class ShockerController
     /// <param name="shockerId"></param>
     /// <response code="200">OK</response>
     [HttpGet("{shockerId}/shareCodes")]
-    [ProducesResponseType<BaseResponse<IEnumerable<ShareCodeInfo>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
+    [ProducesResponseType<BaseResponse<IAsyncEnumerable<ShareCodeInfo>>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json)]
     [ProducesResponseType<OpenShockProblem>(StatusCodes.Status404NotFound, MediaTypeNames.Application.ProblemJson)] // ShockerNotFound    
     [MapToApiVersion("1")]
     public async Task<IActionResult> ShockerShareCodeList([FromRoute] Guid shockerId)
     {
         var owns = await _db.Shockers.AnyAsync(x => x.DeviceNavigation.Owner == CurrentUser.Id && x.Id == shockerId);
         if (!owns) return Problem(ShockerError.ShockerNotFound);
-        var shares = await _db.ShockerShareCodes
-            .Where(x => x.ShockerId == shockerId && x.Shocker.DeviceNavigation.Owner == CurrentUser.Id).Select(x =>
-                new ShareCodeInfo
-                {
-                    CreatedOn = x.CreatedOn,
-                    Id = x.Id
-                }
-            ).ToArrayAsync();
+
+        var shares = _db.ShockerShareCodes
+            .Where(x => x.ShockerId == shockerId && x.Shocker.DeviceNavigation.Owner == CurrentUser.Id)
+            .Select(x => new ShareCodeInfo
+            {
+                CreatedOn = x.CreatedOn,
+                Id = x.Id
+            })
+            .AsAsyncEnumerable();
 
         return RespondSuccessLegacy(shares);
     }

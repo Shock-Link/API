@@ -69,12 +69,12 @@ public sealed class UserHub : Hub<IUserHub>
         await Clients.Caller.DeviceStatus(final);
     }
 
-    public Task Control(IEnumerable<Common.Models.WebSocket.User.Control> shocks)
+    public Task Control(Models.WebSocket.User.Control[] shocks)
     {
         return ControlV2(shocks, null);
     }
 
-    public async Task ControlV2(IEnumerable<Common.Models.WebSocket.User.Control> shocks, string? customName)
+    public async Task ControlV2(Models.WebSocket.User.Control[] shocks, string? customName)
     {
         if (!_tokenPermissions.IsAllowedAllowOnNull(PermissionType.Shockers_Use)) return;
 
