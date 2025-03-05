@@ -78,6 +78,8 @@ public partial class OpenShockContext : DbContext
 
     public virtual DbSet<ApiToken> ApiTokens { get; set; }
 
+    public virtual DbSet<ApiTokenReport> ApiTokensReports { get; set; }
+
     public virtual DbSet<Device> Devices { get; set; }
 
     public virtual DbSet<DeviceOtaUpdate> DeviceOtaUpdates { get; set; }
@@ -165,6 +167,24 @@ public partial class OpenShockContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.ApiTokens)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("fk_user_id");
+        });
+
+        modelBuilder.Entity<ApiTokenReport>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("api_token_reports_pkey");
+
+            entity.ToTable("api_token_reports");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.ReportedByUserId)
+                .HasColumnName("reported_by_user_id");
+            entity.Property(e => e.ReportedByIp)
+                .HasColumnName("reported_by_ip");
+            entity.Property(e => e.ReportedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("reported_at");
         });
 
         modelBuilder.Entity<Device>(entity =>

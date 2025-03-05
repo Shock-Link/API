@@ -1,17 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Net.Mime;
+﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OpenShock.API.Models.Requests;
 using OpenShock.API.Models.Response;
-using OpenShock.API.Utils;
 using OpenShock.Common;
 using OpenShock.Common.Authentication;
-using OpenShock.Common.Authentication.Attributes;
 using OpenShock.Common.Constants;
 using OpenShock.Common.Errors;
-using OpenShock.Common.Models;
 using OpenShock.Common.OpenShockDb;
 using OpenShock.Common.Problems;
 using OpenShock.Common.Utils;
@@ -148,25 +144,5 @@ public sealed partial class TokensController
         await _db.SaveChangesAsync();
 
         return Ok();
-    }
-
-    public class EditTokenRequest
-    {
-        [StringLength(HardLimits.ApiKeyNameMaxLength, MinimumLength = 1, ErrorMessage = "API token length must be between {1} and {2}")]
-        public required string Name { get; set; }
-        
-        [MaxLength(HardLimits.ApiKeyMaxPermissions, ErrorMessage = "API token permissions must be between {1} and {2}")]
-        public List<PermissionType> Permissions { get; set; } = [PermissionType.Shockers_Use];
-    }
-
-    public sealed class CreateTokenRequest : EditTokenRequest
-    {
-        public DateTime? ValidUntil { get; set; } = null;
-    }
-    
-    public sealed class TokenCreatedResponse
-    {
-        public required string Token { get; set; }
-        public required Guid Id { get; set; }
     }
 }
